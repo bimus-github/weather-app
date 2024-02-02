@@ -10,7 +10,7 @@ export default {
   },
   bgColor: {
     main: "#ffffff",
-    card: "#0A44E6",
+    card: "#2C79C1",
     "card-from": "#62B8F6",
     "card-to": "#2C79C1",
     cardBg: `linear-gradient(180deg, #62B8F6 0%, #2C79C1 77.96%)`,
