@@ -7,6 +7,7 @@ export default {
     secondary: "#1B2541",
     placeholder: "#828282",
     "expand-more": "#0A44E6",
+    unit: "#E0E0E0",
   },
   bgColor: {
     main: "#ffffff",
