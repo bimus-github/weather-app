@@ -1,12 +1,17 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Colors from "@/constants/Colors";
 import { menu, plus } from "@/constants/Icons";
+import { useRouter } from "expo-router";
+import MenuModal from "../MenuModal";
+import { MenuItem } from "react-native-material-menu";
 
 const Header = () => {
+  const router = useRouter();
+  const [isMenuOpened, setIsMenuOpened] = useState<boolean>(false);
   return (
     <View style={styles.header}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push("/Search")}>
         <Image source={plus} style={styles.headIcon} />
       </TouchableOpacity>
       <View
@@ -26,9 +31,33 @@ const Header = () => {
           Tashkent
         </Text>
       </View>
-      <TouchableOpacity>
-        <Image source={menu} style={styles.headIcon} />
-      </TouchableOpacity>
+      <MenuModal
+        visible={isMenuOpened}
+        setVisible={setIsMenuOpened}
+        anchor={
+          <TouchableOpacity onPress={() => setIsMenuOpened(!isMenuOpened)}>
+            <Image source={menu} style={styles.headIcon} />
+          </TouchableOpacity>
+        }
+        children={
+          <>
+            {[
+              { name: "Share", path: "" },
+              { name: "Setting", path: "/Setting" },
+            ].map((item, index) => (
+              <MenuItem
+                key={index}
+                onPress={() => {
+                  router.push(item.path as any);
+                  setIsMenuOpened(false);
+                }}
+              >
+                <Text>{item.name}</Text>
+              </MenuItem>
+            ))}
+          </>
+        }
+      />
     </View>
   );
 };
