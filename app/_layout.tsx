@@ -50,14 +50,14 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <Stack
-      initialRouteName="Home"
+      initialRouteName="/"
       screenOptions={{
         headerShadowVisible: false,
         contentStyle: { backgroundColor: Colors.bgColor.main },
         header: () => null,
       }}
     >
-      <Stack.Screen name="Home" />
+      <Stack.Screen name="index" />
     </Stack>
   );
 }
