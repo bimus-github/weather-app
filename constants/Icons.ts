@@ -6,6 +6,8 @@ const backArrow = require("@/assets/icons/bi_arrow-left-short.png");
 const search = require("@/assets/icons/akar-icons_search.png");
 const chechedBox = require("@/assets/icons/Check-Box-Frame-105.png");
 const unChechedBox = require("@/assets/icons/Check-Box-Frame-106.png");
+const pressure = require("@/assets/icons/fluent_temperature-24-regular.png");
+const humidity = require("@/assets/icons/ion_water-outline.png");
 
 export {
   plus,
@@ -16,4 +18,6 @@ export {
   search,
   chechedBox,
   unChechedBox,
+  pressure,
+  humidity,
 };
