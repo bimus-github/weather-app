@@ -3,9 +3,15 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/Colors";
-import { Header, SearchBar } from "@/components/search";
+import { Header, ResultList, SearchBar } from "@/components/search";
+import useFetch from "@/hooks/useGetCurrent";
 
 const Search = () => {
+  // const { data, error, isLoading, refetch } = useFetch({
+  //   endpoint: "current.json",
+  //   query: "Tashkent",
+  // });
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <LinearGradient
@@ -16,6 +22,7 @@ const Search = () => {
       >
         <Header />
         <SearchBar />
+        <ResultList />
       </LinearGradient>
     </SafeAreaView>
   );
