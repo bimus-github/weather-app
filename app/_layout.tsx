@@ -10,6 +10,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
 import Colors from "@/constants/Colors";
+import { Provider } from "react-redux";
+import store from "@/store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,15 +51,18 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <Stack
-      initialRouteName="/"
-      screenOptions={{
-        headerShadowVisible: false,
-        contentStyle: { backgroundColor: Colors.bgColor.main },
-        header: () => null,
-      }}
-    >
-      <Stack.Screen name="index" />
-    </Stack>
+    <Provider store={store}>
+      <Stack
+        initialRouteName="/"
+        screenOptions={{
+          contentStyle: { backgroundColor: Colors.bgColor.main },
+          header: () => null,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="Search" />
+        <Stack.Screen name="Setting" />
+      </Stack>
+    </Provider>
   );
 }
