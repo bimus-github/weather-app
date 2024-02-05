@@ -34,4 +34,29 @@ export type Current_Type = {
   uv: number;
   gust_mph: number;
   gust_kph: number;
+  maxtemp_c: number;
+  maxtemp_f: number;
+  mintemp_c: number;
+  mintemp_f: number;
+  daily_chance_of_rain: number;
+  time: string;
+};
+
+export type Data_Type = {
+  location: Location_Type;
+  current: Current_Type;
+};
+
+export type Weekly_Data_Type = {
+  date: string;
+  day: Current_Type;
+};
+
+export type PressureUnit = "mbar" | "mmHg" | "inHg" | "atm" | "hPa";
+export type TemperatureUnit = "Celsius" | "Fahrenheit";
+export type WindSpeedUnit = "km/h" | "m/s" | "mi/h" | "ft/s" | "kn";
+export type Settings_Type = {
+  pressureUnit: PressureUnit;
+  temperatureUnit: TemperatureUnit;
+  windSpeedUnit: WindSpeedUnit;
 };
