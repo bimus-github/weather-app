@@ -4,10 +4,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/Colors";
 import { Header, ResultList, SearchBar } from "@/components/search";
-import { Current_Type, Data_Type, Location_Type } from "@/models";
+import { Search_Item_Type } from "@/models";
 
 const Search = () => {
-  const [result, setResult] = useState<Data_Type>();
+  const [result, setResult] = useState<Search_Item_Type[]>();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -18,7 +18,7 @@ const Search = () => {
         style={styles.container}
       >
         <Header />
-        <SearchBar result={result} setResult={setResult} />
+        <SearchBar setResult={setResult} />
         <ResultList result={result} />
       </LinearGradient>
     </SafeAreaView>
