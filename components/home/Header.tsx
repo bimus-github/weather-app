@@ -1,41 +1,16 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import React, { useState } from "react";
 import Colors from "@/constants/Colors";
 import { menu, plus } from "@/constants/Icons";
 import { useRouter } from "expo-router";
 import MenuModal from "../MenuModal";
 import { MenuItem } from "react-native-material-menu";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import useGetCurrent from "@/hooks/useGetCurrent";
-import { locationActions } from "@/store/slices/currentLocation";
+import { useAppSelector } from "@/store/hooks";
 
 const Header = () => {
-  const dispatch = useAppDispatch();
   const router = useRouter();
+  const { name } = useAppSelector((state) => state.location);
   const [isMenuOpened, setIsMenuOpened] = useState<boolean>(false);
-  const currentLocation = useAppSelector((state) => state.location);
-  const { data, error, isLoading, refetch } = useGetCurrent({
-    endpoint: "current.json",
-    query:
-      currentLocation.name || `${currentLocation.lat},${currentLocation.lon}`,
-  });
-
-  useEffect(() => {
-    if (!currentLocation.name) {
-      if (!data) {
-        refetch();
-      } else {
-        dispatch(locationActions.setCurrentLocation(data.location));
-      }
-    }
-  }, []);
 
   return (
     <View style={styles.header}>
@@ -49,21 +24,15 @@ const Header = () => {
           justifyContent: "center",
         }}
       >
-        {isLoading ? (
-          <ActivityIndicator color={Colors.text.main} />
-        ) : error ? (
-          <Text>Not found</Text>
-        ) : (
-          <Text
-            style={{
-              color: Colors.text.main,
-              fontWeight: "600",
-              fontSize: 16,
-            }}
-          >
-            {data?.location.name}
-          </Text>
-        )}
+        <Text
+          style={{
+            color: Colors.text.main,
+            fontWeight: "600",
+            fontSize: 16,
+          }}
+        >
+          {name ? name : "Current Location"}
+        </Text>
       </View>
       <MenuModal
         visible={isMenuOpened}
