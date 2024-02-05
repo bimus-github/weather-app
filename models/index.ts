@@ -60,3 +60,13 @@ export type Settings_Type = {
   temperatureUnit: TemperatureUnit;
   windSpeedUnit: WindSpeedUnit;
 };
+
+export type Search_Item_Type = {
+  id: number;
+  name: string;
+  region: string;
+  country: string;
+  lat: number;
+  lon: number;
+  url: string;
+};
