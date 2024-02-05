@@ -62,6 +62,7 @@ function RootLayoutNav() {
         <Stack.Screen name="index" />
         <Stack.Screen name="Search" />
         <Stack.Screen name="Setting" />
+        <Stack.Screen name="About" />
       </Stack>
     </Provider>
   );
