@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
-  NativeModules,
   NativeSyntheticEvent,
   NativeScrollEvent,
-  FlatList,
-  ScrollViewComponent,
-  ScrollView,
   ActivityIndicator,
-  View,
   Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
