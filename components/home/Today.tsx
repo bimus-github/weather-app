@@ -1,12 +1,10 @@
 import { View, Text, Image, FlatList, StyleSheet } from "react-native";
 import React from "react";
-import { heavyRain } from "@/constants/Icons";
 import Colors from "@/constants/Colors";
 import { useAppSelector } from "@/store/hooks";
 
 const Today = () => {
   const { today } = useAppSelector((state) => state.today);
-  const location = useAppSelector((state) => state.location);
   const tempUnit = useAppSelector((state) => state.settings.temperatureUnit);
   const currentDate = useAppSelector(
     (state) => state.current.current?.last_updated
