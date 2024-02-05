@@ -21,7 +21,9 @@ const Week = () => {
                 fontSize: 16,
               }}
             >
-              {item.date}
+              {new Date(item.date).toLocaleDateString("en-GB", {
+                weekday: "short",
+              })}
             </Text>
             <View
               style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
