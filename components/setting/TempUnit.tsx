@@ -3,10 +3,14 @@ import React, { useState } from "react";
 import MenuModal from "../MenuModal";
 import Colors from "@/constants/Colors";
 import { MenuItem } from "react-native-material-menu";
+import { TemperatureUnit } from "@/models";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { settingsActions } from "@/store/slices/settings";
 
 const TempUnit = () => {
+  const dispatch = useAppDispatch();
   const [visibleTempUnit, setVisibleTempUnit] = useState<boolean>(false);
-  const [currentTempUnit, setCurrentTempUnit] = useState<string>("Celsius");
+  const { temperatureUnit } = useAppSelector((state) => state.settings);
 
   return (
     <View style={styles.item}>
@@ -15,7 +19,7 @@ const TempUnit = () => {
         anchor={
           <TouchableOpacity onPress={() => setVisibleTempUnit(true)}>
             <Text style={[styles.itemText, { color: Colors.text.unit }]}>
-              {currentTempUnit}
+              {temperatureUnit}
             </Text>
           </TouchableOpacity>
         }
@@ -28,7 +32,9 @@ const TempUnit = () => {
                 key={index}
                 onPress={() => {
                   setVisibleTempUnit(false);
-                  setCurrentTempUnit(item);
+                  dispatch(
+                    settingsActions.setTemperatureUnit(item as TemperatureUnit)
+                  );
                 }}
               >
                 {item}
