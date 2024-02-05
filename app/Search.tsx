@@ -1,16 +1,13 @@
-import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import { StyleSheet } from "react-native";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/Colors";
 import { Header, ResultList, SearchBar } from "@/components/search";
-import useFetch from "@/hooks/useGetCurrent";
+import { Current_Type, Data_Type, Location_Type } from "@/models";
 
 const Search = () => {
-  // const { data, error, isLoading, refetch } = useFetch({
-  //   endpoint: "current.json",
-  //   query: "Tashkent",
-  // });
+  const [result, setResult] = useState<Data_Type>();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -21,8 +18,8 @@ const Search = () => {
         style={styles.container}
       >
         <Header />
-        <SearchBar />
-        <ResultList />
+        <SearchBar result={result} setResult={setResult} />
+        <ResultList result={result} />
       </LinearGradient>
     </SafeAreaView>
   );
