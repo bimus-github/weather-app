@@ -2,15 +2,24 @@ import { View, Text, Image, FlatList, StyleSheet } from "react-native";
 import React from "react";
 import { heavyRain } from "@/constants/Icons";
 import Colors from "@/constants/Colors";
+import { useAppSelector } from "@/store/hooks";
 
 const Today = () => {
+  const { today } = useAppSelector((state) => state.today);
+  const location = useAppSelector((state) => state.location);
+  const tempUnit = useAppSelector((state) => state.settings.temperatureUnit);
+  const currentDate = useAppSelector(
+    (state) => state.current.current?.last_updated
+  );
+  const currentHour = +(currentDate || "2022-11-14 00:00").slice(-5, -3);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sunday | Nov 14</Text>
       <FlatList
         showsHorizontalScrollIndicator={false}
         horizontal
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        data={today.slice(currentHour)}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Text
@@ -20,11 +29,13 @@ const Today = () => {
                 fontWeight: "500",
               }}
             >
-              Now
+              {item.time.slice(-5)}
             </Text>
             <Image
-              source={heavyRain}
-              style={{ width: 24, height: 24, tintColor: Colors.text.main }}
+              source={{
+                uri: `https:${item.condition.icon}`,
+              }}
+              style={{ width: 24, height: 24 }}
             />
             <Text
               style={{
@@ -33,7 +44,9 @@ const Today = () => {
                 fontWeight: "400",
               }}
             >
-              20C/24C
+              {tempUnit === "Celsius" && `${item.temp_c}°/${item.feelslike_c}°`}
+              {tempUnit === "Fahrenheit" &&
+                `${item.temp_f}°/${item.feelslike_f}°`}
             </Text>
             <Text
               style={{
@@ -46,7 +59,7 @@ const Today = () => {
             </Text>
           </View>
         )}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
@@ -56,7 +69,6 @@ export default Today;
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
     height: 140,
     backgroundColor: Colors.bgColor.card,
     paddingHorizontal: 20,
