@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import MenuModal from "../MenuModal";
 import Colors from "@/constants/Colors";
 import { MenuItem } from "react-native-material-menu";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { settingsActions } from "@/store/slices/settings";
+import { WindSpeedUnit } from "@/models";
 
-const WindSpeedUnit = () => {
+const WindSpeed = () => {
+  const dispatch = useAppDispatch();
   const [visibleWindSpeedUnit, setVisibleWindSpeedUnit] =
     useState<boolean>(false);
-  const [currentWindSpeedUnit, setCurrentWindSpeedUnit] =
-    useState<string>("km/h");
+  const { windSpeedUnit } = useAppSelector((state) => state.settings);
 
   return (
     <View style={styles.item}>
@@ -17,7 +20,7 @@ const WindSpeedUnit = () => {
         anchor={
           <TouchableOpacity onPress={() => setVisibleWindSpeedUnit(true)}>
             <Text style={[styles.itemText, { color: Colors.text.unit }]}>
-              {currentWindSpeedUnit}
+              {windSpeedUnit}
             </Text>
           </TouchableOpacity>
         }
@@ -30,7 +33,9 @@ const WindSpeedUnit = () => {
                 key={index}
                 onPress={() => {
                   setVisibleWindSpeedUnit(false);
-                  setCurrentWindSpeedUnit(item);
+                  dispatch(
+                    settingsActions.setWindSpeedUnit(item as WindSpeedUnit)
+                  );
                 }}
               >
                 {item}
@@ -43,7 +48,7 @@ const WindSpeedUnit = () => {
   );
 };
 
-export default WindSpeedUnit;
+export default WindSpeed;
 
 const styles = StyleSheet.create({
   item: {
