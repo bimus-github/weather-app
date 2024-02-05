@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   NativeModules,
@@ -7,19 +7,30 @@ import {
   FlatList,
   ScrollViewComponent,
   ScrollView,
+  ActivityIndicator,
+  View,
+  Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Current, Today, Week } from "@/components/home";
 import Dimentions from "@/constants/Dimentions";
-
-const { UIManager } = NativeModules;
-
-UIManager.setLayoutAnimationEnabledExperimental &&
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+import { getCurrentLocation, getDataFromApi } from "@/hooks/getCurrentLocation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { currentActions } from "@/store/slices/currentWeather";
+import { locationActions } from "@/store/slices/currentLocation";
+import Colors from "@/constants/Colors";
+import { getWeeklyDataByLocation } from "@/hooks/getWeeklyData";
+import { weekActions } from "@/store/slices/week";
+import { getDataOfToday } from "@/hooks/getDataOfToday";
+import { todayActions } from "@/store/slices/today";
 
 const Home: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const currentLocation = useAppSelector((state) => state.location);
+  const [isLodaing, setIsLodaing] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [heightOfMainCard, setHeightOfMainCard] = useState(
-    Dimentions.height * 0.7
+    Dimentions.height * 0.5
   );
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -33,13 +44,65 @@ const Home: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (!currentLocation.name.length) {
+      setIsLodaing(true);
+      getCurrentLocation()
+        .then((location) => {
+          if (location) {
+            const { latitude, longitude } = location.coords;
+
+            getDataFromApi({ lot: latitude, lon: longitude }).then((data) => {
+              const { location, current } = data;
+
+              if (current) {
+                dispatch(currentActions.setCurrent(current));
+              }
+
+              if (location) {
+                dispatch(locationActions.setCurrentLocation(location));
+              }
+            });
+
+            getWeeklyDataByLocation({
+              lot: latitude,
+              lon: longitude,
+            }).then((data) => {
+              if (data) {
+                dispatch(weekActions.setWeek(data.week));
+              }
+            });
+
+            getDataOfToday({
+              lot: latitude,
+              lon: longitude,
+            }).then((data) => {
+              if (data) {
+                dispatch(todayActions.setToday(data.today));
+              }
+            });
+          } else {
+            setIsLodaing(false);
+            setIsError(true);
+          }
+        })
+        .finally(() => setIsLodaing(false));
+    }
+  }, [dispatch, currentLocation]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView onScroll={onScroll} scrollEventThrottle={10}>
-        <Current heightOfMainCard={heightOfMainCard} />
-        <Today />
-        <Week />
-      </ScrollView>
+      {isLodaing ? (
+        <ActivityIndicator size="large" color={Colors.text.main} />
+      ) : isError ? (
+        <Text>Something went wrong</Text>
+      ) : (
+        <>
+          <Current heightOfMainCard={heightOfMainCard} />
+          <Today />
+          <Week />
+        </>
+      )}
     </SafeAreaView>
   );
 };
@@ -47,7 +110,7 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 10,
+    gap: 3,
   },
 });
 
