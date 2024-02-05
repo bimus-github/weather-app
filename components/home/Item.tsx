@@ -1,8 +1,6 @@
 import { View, Text, Image, ImageSourcePropType } from "react-native";
 import React from "react";
-import { locationCurrent } from "@/constants/Icons";
 import Colors from "@/constants/Colors";
-import { useAppSelector } from "@/store/hooks";
 
 const Item = ({
   name,
