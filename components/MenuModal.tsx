@@ -1,7 +1,5 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { Menu, MenuDivider, MenuItem } from "react-native-material-menu";
-import { useRouter } from "expo-router";
+import { Menu } from "react-native-material-menu";
 
 /**
  * Renders a menu modal with the given options and anchor.
