@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import Colors from "@/constants/Colors";
+import { useRouter } from "expo-router";
 
 const Extra = () => {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Text
@@ -15,7 +17,7 @@ const Extra = () => {
         EXTRA
       </Text>
       <View style={styles.list}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/About")}>
           <Text style={styles.itemText}>About</Text>
         </TouchableOpacity>
         <TouchableOpacity>
