@@ -1,54 +1,19 @@
-import {
-  View,
-  Text,
-  Image,
-  Animated,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import React, { useEffect } from "react";
-import {
-  heavyRain,
-  humidity,
-  locationCurrent,
-  pressure,
-} from "@/constants/Icons";
+import { View, StyleSheet } from "react-native";
+import React from "react";
+import { humidity, locationCurrent, pressure } from "@/constants/Icons";
 import Colors from "@/constants/Colors";
 import Divider from "../Divider";
 import Header from "./Header";
 import { LinearGradient } from "expo-linear-gradient";
-import Dimentions from "@/constants/Dimentions";
-import useGetCurrent from "@/hooks/useGetCurrent";
-import { useGetLocation } from "@/hooks/useGetLocation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { locationActions } from "@/store/slices/currentLocation";
+import MainAnimatedCard from "./MainAnimatedCard";
+import Item from "./Item";
+import { useAppSelector } from "@/store/hooks";
 
 const Current = ({ heightOfMainCard }: { heightOfMainCard: number }) => {
-  const { data, error, isLoading, refetch } = useGetLocation();
-  const dispatch = useAppDispatch();
-  const currentLocation = useAppSelector((state) => state.location);
-  const {
-    data: current,
-    error: currentError,
-    isLoading: currentIsLoading,
-  } = useGetCurrent({
-    endpoint: "current.json",
-    query:
-      currentLocation.name || `${currentLocation.lat},${currentLocation.lon}`,
-  });
-
-  useEffect(() => {
-    if (!currentLocation.lat || !currentLocation.lon) {
-      if (!data) {
-        refetch();
-      } else {
-        dispatch(locationActions.setCurrentLocation(data));
-      }
-    }
-  }, [currentLocation.lat, currentLocation.lon, data, refetch, dispatch]);
-
-  console.log(current?.current.condition.icon.slice(2));
-
+  const { current } = useAppSelector((state) => state.current);
+  const { pressureUnit, windSpeedUnit } = useAppSelector(
+    (state) => state.settings
+  );
   return (
     <LinearGradient
       colors={[Colors.bgColor["card-from"], Colors.bgColor["card-to"]]}
@@ -56,172 +21,75 @@ const Current = ({ heightOfMainCard }: { heightOfMainCard: number }) => {
       end={[0, 1]}
       style={[styles.mainCard, { height: heightOfMainCard }]}
     >
-      {isLoading ? (
-        <ActivityIndicator color={Colors.text.main} />
-      ) : error ? (
-        <Text>Samething went wrong!</Text>
-      ) : (
-        <>
-          <Header />
-          <Animated.View
-            style={[
-              { flexDirection: +heightOfMainCard < 400 ? "row" : "column" },
-              { alignItems: "center", justifyContent: "center" },
-            ]}
-          >
-            {currentIsLoading ? (
-              <ActivityIndicator color={Colors.text.main} />
-            ) : (
-              <Image
-                source={{ uri: `https:${current?.current.condition.icon}` }}
-                style={[sizeOfIcon(+heightOfMainCard)]}
-              />
-            )}
-            {currentIsLoading ? (
-              <ActivityIndicator color={Colors.text.main} />
-            ) : (
-              <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Text style={{ color: Colors.text.main, fontSize: 16 }}>
-                  {new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </Text>
-                <Text style={{ color: Colors.text.main, fontSize: 72 }}>
-                  {current?.current.temp_c}°
-                </Text>
-                <Text style={{ color: Colors.text.main, fontSize: 16 }}>
-                  {current?.current.condition.text}
-                </Text>
-              </View>
-            )}
-          </Animated.View>
-          <Divider />
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              paddingVertical: 7,
-            }}
-          >
-            {/* WIND */}
-            {currentIsLoading ? (
-              <ActivityIndicator color={Colors.text.main} />
-            ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={locationCurrent}
-                  style={{ width: 32, height: 32, tintColor: Colors.text.main }}
-                />
-                <View>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    {current?.current.wind_kph} kph
-                  </Text>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    Wind
-                  </Text>
-                </View>
-              </View>
-            )}
+      <>
+        <Header />
+        <MainAnimatedCard heightOfMainCard={heightOfMainCard} />
+        <Divider />
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            paddingVertical: 7,
+          }}
+        >
+          {/* WIND */}
+          <Item
+            sourceIcon={locationCurrent}
+            name="Wind"
+            value={
+              windSpeedUnit === "km/h"
+                ? `${current?.wind_kph} km/h`
+                : windSpeedUnit === "m/s"
+                ? `${current?.wind_kph || 0 * 3.6} m/s`
+                : windSpeedUnit === "mi/h"
+                ? `${current?.wind_mph || 0 * 2.24} mi/h`
+                : windSpeedUnit === "ft/s"
+                ? `${current?.wind_mph || 0 * 3.281} ft/s`
+                : `${current?.wind_kph || 0 * 3.6} kn`
+            }
+          />
 
-            {/* CLOUD */}
-            {currentIsLoading ? (
-              <ActivityIndicator color={Colors.text.main} />
-            ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={{
-                    uri: `https:${current?.current.condition.icon}`,
-                  }}
-                  style={{ width: 32, height: 32 }}
-                />
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    {current?.current.cloud}
-                  </Text>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    Chance of rain
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              paddingVertical: 7,
-            }}
-          >
-            {/* PRESSURE */}
-            {currentIsLoading ? (
-              <ActivityIndicator color={Colors.text.main} />
-            ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={pressure}
-                  style={{ width: 32, height: 32, tintColor: Colors.text.main }}
-                />
-                <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    {current?.current.pressure_mb} mb
-                  </Text>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    Pressure
-                  </Text>
-                </View>
-              </View>
-            )}
+          {/* CLOUD */}
+          <Item
+            sourceIcon={{ uri: `https:${current?.condition.icon}` }}
+            name="Chance of rain"
+            value={`${current?.cloud}%`}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            paddingVertical: 7,
+          }}
+        >
+          {/* PRESSURE */}
+          <Item
+            sourceIcon={pressure}
+            name="Pressure"
+            value={
+              pressureUnit === "mbar"
+                ? `${current?.pressure_mb} mbar`
+                : pressureUnit === "inHg"
+                ? `${current?.pressure_mb || 0 * 0.02953} inHg`
+                : pressureUnit === "hPa"
+                ? `${current?.pressure_mb || 0 * 0.01} hPa`
+                : pressureUnit === "atm"
+                ? `${current?.pressure_mb || 0 * 0.009869} atm`
+                : `${current?.pressure_mb || 0 * 0.01} mmHg`
+            }
+          />
 
-            {/* HUMIDITY */}
-            {currentIsLoading ? (
-              <ActivityIndicator color={Colors.text.main} />
-            ) : (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={humidity}
-                  style={{ width: 32, height: 32, tintColor: Colors.text.main }}
-                />
-                <View>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    {current?.current.humidity}%
-                  </Text>
-                  <Text style={{ color: Colors.text.main, fontSize: 12 }}>
-                    Humidity
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-        </>
-      )}
+          {/* HUMIDITY */}
+          <Item
+            sourceIcon={humidity}
+            name="Humidity"
+            value={`${current?.humidity}%`}
+          />
+        </View>
+      </>
     </LinearGradient>
   );
 };
@@ -236,16 +104,3 @@ const styles = StyleSheet.create({
     gap: 5,
   },
 });
-
-const sizeOfIcon = (heightOfMainCard: number) => {
-  const maxSize = 200; // if heightOfMainCard = Dimentions.height * 0.8
-  const minSize = 100; // if heightOfMainCard = Dimentions.height * 0.5
-
-  const size =
-    (maxSize - minSize) * (heightOfMainCard / Dimentions.height) + minSize;
-
-  return {
-    width: size,
-    height: size,
-  };
-};
